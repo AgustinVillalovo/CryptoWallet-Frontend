@@ -5,6 +5,7 @@
     <thead>
       <tr>
         <th>ID</th>
+        <th>Cliente</th>
         <th>Cripto</th>
         <th>Cantidad</th>
         <th>Monto ARS</th>
@@ -17,11 +18,12 @@
     <tbody>
       <tr v-for="transaction in transactions" :key="transaction.id">
         <td>{{ transaction.id }}</td>
+        <td>{{ transaction.clientName }}</td>
         <td>{{ transaction.cryptoCode }}</td>
         <td>{{ transaction.cryptoAmount }}</td>
-        <td>{{ transaction.money }}</td>
+        <td>{{ transaction.money.toLocaleString('es-AR',{style:'currency',currency:'ARS'}) }}</td>
         <td>{{ transaction.action }}</td>
-        <td>{{ transaction.transactionDate }}</td>
+        <td>{{ new Date(transaction.transactionDate).toLocaleString() }}</td>
         <td>
          <button @click="editar(transaction)">Editar</button>
         <button @click="eliminar(transaction.id)">Borrar</button>

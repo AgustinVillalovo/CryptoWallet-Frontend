@@ -2,6 +2,8 @@
   <nav>
     <RouterLink to="/">Nueva Compra</RouterLink>
     <RouterLink to="/historial">Historial</RouterLink>
+    <RouterLink to="/clientes/nuevo">Nuevo Cliente</RouterLink>
+    <RouterLink to="/clientes">Clientes</RouterLink>
   </nav>
 
   <RouterView />

@@ -1,12 +1,25 @@
 <template>
   <h1>Nueva Compra</h1>
-
+  
   <form @submit.prevent="guardarTransaccion">
+    <div>
+  <label>Cliente</label>
+
+  <select v-model="transaction.clientId">
+    <option
+      v-for="client in clients"
+      :key="client.id"
+      :value="client.id"
+    >
+      {{ client.name }}
+    </option>
+  </select>
+</div>
     <div>
       <label>Criptomoneda</label>
       <select v-model="transaction.cryptoCode">
         <option value="btc">Bitcoin</option>
-        <option value="bnb">BNB</option>
+        <option value="usdt">USDT</option>
         <option value="sol">Solana</option>
 </select>
     </div>
@@ -43,16 +56,26 @@
 </template>
 
 <script setup>
-import { ref} from 'vue'
+import { ref, onMounted } from 'vue'
 
 const transaction = ref({
   cryptoCode: 'btc',
   cryptoAmount: 0,
   money: 0,
   action: 'compra',
-  transactionDate: ''
+  transactionDate: '',
+  clientId: 0
 })
+const clients = ref([])
 
+const cargarClientes = async () => {
+  const response = await fetch('https://localhost:7114/api/Clients')
+  clients.value = await response.json()
+
+  if (clients.value.length > 0) {
+    transaction.value.clientId = clients.value[0].id
+  }
+}
 
 const guardarTransaccion = async () => {
   try {
@@ -75,25 +98,35 @@ if (!transaction.value.transactionDate) {
       }
     )
 
-    const data = await response.json()
+    if (!response.ok) {
+  const error = await response.text()
+  alert(error)
+  return
+}
 
-    console.log(data)
+const data = await response.json()
 
-    alert('Transacción guardada correctamente')
+console.log(data)
+
+alert('Transacción guardada correctamente')
     transaction.value = {
   cryptoCode: 'btc',
   cryptoAmount: 0,
   money: 0,
   action: 'compra',
-  transactionDate: ''
+  transactionDate: '',
+  clientId: clients.value[0]?.id || 0
 }
   } catch (error) {
     console.error(error)
     alert('Error al guardar')
   }
 }
-
+onMounted(() => {
+  cargarClientes()
+})
 </script>
+
 <style scoped>
 h1 {
   text-align: center;
